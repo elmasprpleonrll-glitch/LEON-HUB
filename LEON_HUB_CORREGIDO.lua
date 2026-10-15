@@ -3827,16 +3827,28 @@ function resetProgressBar()
 end
 
 local function doTpDown()
-    pcall(function()
-        local char = LP.Character
-        if not char then return end
-        local root = char:FindFirstChild("HumanoidRootPart")
-        if not root then return end
-        local _, yaw = root.CFrame:ToEulerAnglesYXZ()
-        root.CFrame = _CFnew(root.Position.X, -7, root.Position.Z) * CFrame.Angles(0, yaw, 0)
-        root.AssemblyLinearVelocity = _V3zero
-        root.AssemblyAngularVelocity = _V3zero
-    end)
+    local char = LP.Character
+    if not char or not char.Parent then
+        return false
+    end
+
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChildOfClass("Humanoid")
+
+    if not root or not hum or hum.Health <= 0 then
+        return false
+    end
+
+    local _, yaw = root.CFrame:ToEulerAnglesYXZ()
+
+    root.CFrame =
+        CFrame.new(root.Position.X, -7, root.Position.Z)
+        * CFrame.Angles(0, yaw, 0)
+
+    root.AssemblyLinearVelocity = Vector3.zero
+    root.AssemblyAngularVelocity = Vector3.zero
+
+    return true
 end
 
 _G._VynxRunTPDown = doTpDown
